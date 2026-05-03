@@ -115,7 +115,7 @@ bool Optimizer::optimizeIR()
 
         LPM.addPass(LoopRotatePass()); // sum-1
         LPM.addPass(LICMPass(LICMOptions())); // sum-1
-        LPM.addPass(SimpleLoopUnswitchPass()); // sum-2
+        LPM.addPass(SimpleLoopUnswitchPass(true)); // sum-2 + sum-3
         FPM.addPass(createFunctionToLoopPassAdaptor(std::move(LPM), true)); // sum-1
 
         FPM.addPass(LoopVectorizePass()); // sum-1
