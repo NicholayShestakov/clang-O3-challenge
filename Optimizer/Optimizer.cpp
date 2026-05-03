@@ -103,9 +103,10 @@ bool Optimizer::optimizeIR()
             return false;
         }
     } else {
-        /// TODO: Extend pipeline here (extend \c MPM).
         FunctionPassManager FPM;
         LoopPassManager LPM;
+
+        MPM.addPass(ModuleInlinerPass()); // sum-4
 
         FPM.addPass(SROAPass(SROAOptions::ModifyCFG));
 
