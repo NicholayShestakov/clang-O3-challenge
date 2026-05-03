@@ -7,6 +7,7 @@
 #include <llvm/TargetParser/Host.h>
 #include <llvm/Transforms/IPO/ModuleInliner.h>
 #include <llvm/Transforms/InstCombine/InstCombine.h>
+#include <llvm/Transforms/Scalar/EarlyCSE.h>
 #include <llvm/Transforms/Scalar/GVN.h>
 #include <llvm/Transforms/Scalar/LICM.h>
 #include <llvm/Transforms/Scalar/LoopPassManager.h>
@@ -90,9 +91,7 @@ bool Optimizer::optimizeIR()
 
         FPM.addPass(SROAPass(SROAOptions::ModifyCFG));
 
-        FPM.addPass(GVNPass()); // sum-2
-        FPM.addPass(SimplifyCFGPass()); // sum-2
-        FPM.addPass(InstCombinePass()); // sum-1
+        FPM.addPass(EarlyCSEPass(true)); // optimization
 
         LPM.addPass(LoopRotatePass()); // sum-1
         LPM.addPass(LICMPass(LICMOptions())); // sum-1
