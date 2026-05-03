@@ -109,14 +109,16 @@ bool Optimizer::optimizeIR()
 
         FPM.addPass(SROAPass(SROAOptions::ModifyCFG));
 
-        // sum-1 passes begin
-        FPM.addPass(InstCombinePass());
+        FPM.addPass(GVNPass()); // sum-2
+        FPM.addPass(SimplifyCFGPass()); // sum-2
+        FPM.addPass(InstCombinePass()); // sum-1
 
-        LPM.addPass(LoopRotatePass());
-        LPM.addPass(LICMPass(LICMOptions()));
-        FPM.addPass(createFunctionToLoopPassAdaptor(std::move(LPM), true));
-        FPM.addPass(LoopVectorizePass());
-        // sum-1 passes end
+        LPM.addPass(LoopRotatePass()); // sum-1
+        LPM.addPass(LICMPass(LICMOptions())); // sum-1
+        LPM.addPass(SimpleLoopUnswitchPass()); // sum-2
+        FPM.addPass(createFunctionToLoopPassAdaptor(std::move(LPM), true)); // sum-1
+
+        FPM.addPass(LoopVectorizePass()); // sum-1
 
         MPM.addPass(createModuleToFunctionPassAdaptor(std::move(FPM)));
     }
